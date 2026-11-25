@@ -85,7 +85,7 @@ let settings: AppSettings = {
   collarColor: 'none',
   headphoneMode: 'off',
   fpsCap: 0,
-  language: 'auto',
+  language: 'en-US',
 };
 
 let catList: CatSkinConfig[] = [...DEFAULT_BUILTIN_CATS];

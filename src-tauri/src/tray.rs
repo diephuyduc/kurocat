@@ -31,6 +31,7 @@ struct TrayCheckHandles {
     lang_en_us: CheckMenuItem<Wry>,
     lang_ja_jp: CheckMenuItem<Wry>,
     lang_ko_kr: CheckMenuItem<Wry>,
+    lang_vi_vn: CheckMenuItem<Wry>,
 }
 
 fn active_handles() -> &'static Mutex<Option<TrayCheckHandles>> {
@@ -68,6 +69,7 @@ fn sync_checkmarks(s: &AppSettings) {
             let _ = h.lang_en_us.set_checked(s.language == "en-US");
             let _ = h.lang_ja_jp.set_checked(s.language == "ja-JP");
             let _ = h.lang_ko_kr.set_checked(s.language == "ko-KR");
+            let _ = h.lang_vi_vn.set_checked(s.language == "vi-VN");
         }
     }
 }
@@ -199,6 +201,7 @@ fn build_tray_menu(
     let breed_tuxedo = MenuItem::with_id(app, "breed_tuxedo", t(lang, "breeds.tuxedo"), true, None::<&str>)?;
     let breed_siamese = MenuItem::with_id(app, "breed_siamese", t(lang, "breeds.siamese"), true, None::<&str>)?;
     let breed_dafeiyu = MenuItem::with_id(app, "breed_dafeiyu", t(lang, "breeds.dafeiyu"), true, None::<&str>)?;
+    let breed_shiba = MenuItem::with_id(app, "breed_shiba", t(lang, "breeds.shiba"), true, None::<&str>)?;
     let breed_menu = Submenu::with_items(
         app,
         t(lang, "tray.breed_menu"),
@@ -211,6 +214,7 @@ fn build_tray_menu(
             &breed_tuxedo,
             &breed_siamese,
             &breed_dafeiyu,
+            &breed_shiba,
         ],
     )?;
 
@@ -270,6 +274,7 @@ fn build_tray_menu(
     let lang_en_us = CheckMenuItem::with_id(app, "lang_en-US", "English", true, initial.language == "en-US", None::<&str>)?;
     let lang_ja_jp = CheckMenuItem::with_id(app, "lang_ja-JP", "日本語", true, initial.language == "ja-JP", None::<&str>)?;
     let lang_ko_kr = CheckMenuItem::with_id(app, "lang_ko-KR", "한국어", true, initial.language == "ko-KR", None::<&str>)?;
+    let lang_vi_vn = CheckMenuItem::with_id(app, "lang_vi-VN", "Tiếng Việt", true, initial.language == "vi-VN", None::<&str>)?;
     let lang_menu = Submenu::with_items(
         app,
         t(lang, "tray.lang_menu"),
@@ -282,6 +287,7 @@ fn build_tray_menu(
             &lang_en_us,
             &lang_ja_jp,
             &lang_ko_kr,
+            &lang_vi_vn,
         ],
     )?;
 
@@ -380,9 +386,6 @@ fn build_tray_menu(
             &display_menu,
             &reset_pos,
             &autostart,
-            &obs_menu,
-            &mcp_toggle,
-            &check_update,
             &sep2,
             &quit,
         ],
@@ -410,9 +413,6 @@ fn build_tray_menu(
             &display_menu,
             &reset_pos,
             &autostart,
-            &obs_menu,
-            &mcp_toggle,
-            &check_update,
             &sep2,
             &quit,
         ],
@@ -438,9 +438,6 @@ fn build_tray_menu(
             &lang_menu,
             &reset_pos,
             &autostart,
-            &obs_menu,
-            &mcp_toggle,
-            &check_update,
             &sep2,
             &quit,
         ],
@@ -465,6 +462,7 @@ fn build_tray_menu(
         lang_en_us,
         lang_ja_jp,
         lang_ko_kr,
+        lang_vi_vn,
     };
 
     Ok((menu, handles))
@@ -771,6 +769,7 @@ pub fn setup_tray(app: &AppHandle, initial: &AppSettings) -> tauri::Result<()> {
                 "breed_tuxedo" => apply_breed_and_save(app, "tuxedo"),
                 "breed_siamese" => apply_breed_and_save(app, "siamese"),
                 "breed_dafeiyu" => apply_breed_and_save(app, "dafeiyu"),
+                "breed_shiba" => apply_breed_and_save(app, "shiba"),
                 "scale_25" => apply_scale_and_save(app, 0.25),
                 "scale_50" => apply_scale_and_save(app, 0.5),
                 "scale_75" => apply_scale_and_save(app, 0.75),
@@ -797,6 +796,7 @@ pub fn setup_tray(app: &AppHandle, initial: &AppSettings) -> tauri::Result<()> {
                 "lang_en-US" => apply_language_and_save(app, "en-US"),
                 "lang_ja-JP" => apply_language_and_save(app, "ja-JP"),
                 "lang_ko-KR" => apply_language_and_save(app, "ko-KR"),
+                "lang_vi-VN" => apply_language_and_save(app, "vi-VN"),
                 "desktop_shortcut" => {
                     let _ = crate::config::create_desktop_shortcut();
                 }

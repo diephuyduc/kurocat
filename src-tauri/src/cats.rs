@@ -153,7 +153,19 @@ pub fn sanitize_cat_id(raw: &str) -> String {
     }
 }
 
+const SHIBA_JSON: &str = r##"{"id": "shiba", "name": "Ginger Cat", "emoji": "🐱", "builtin": true, "furColor": "#e8973a", "furSecondaryColor": "#f2ae55", "outlineColor": "#4a2c1a", "pattern": "solid", "maskColor": "#fff4e2", "bellyBibColor": "#fff4e2", "flankColor": "#fde6c4", "earOuterColor": "#e8973a", "earInnerColor": "#f6c9a6", "tailColor": "#e8973a", "tailTipColor": "#fff4e2", "tailFluffy": true, "tailStripes": false, "eyeColorTop": "#4a2c1a", "eyeColorBottom": "#6b4226", "pupilColor": "#1a0f0a", "eyeCatchlight": true, "noseColor": "#2a1a12", "mouthColor": "#4a2c1a", "blushColor": "#f5a3a3", "armColor": "#e8973a", "pawColor": "#fff4e2", "pawOutlineColor": "#4a2c1a", "accentColor": "#f2ae55", "accentSideColor": "#c9771f", "spots": []}"##;
+
+fn shiba_cat() -> CatSkinConfig {
+    serde_json::from_str(SHIBA_JSON).expect("built-in shiba skin JSON is valid")
+}
+
 pub fn builtin_cats() -> Vec<CatSkinConfig> {
+    let mut cats = builtin_cats_base();
+    cats.push(shiba_cat());
+    cats
+}
+
+fn builtin_cats_base() -> Vec<CatSkinConfig> {
     vec![
         CatSkinConfig {
             id: "black".to_string(),

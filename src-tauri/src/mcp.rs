@@ -397,38 +397,7 @@ pub fn handle_jsonrpc(req: &Value, on_change: &dyn Fn()) -> Option<Value> {
 
 /// Transport 1: Zero-dependency native Stdio MCP server (`KuroCatPet.exe --mcp`)
 pub fn run_stdio_mcp() {
-    let stdin = std::io::stdin();
-    let stdout = std::io::stdout();
-    let mut out = stdout.lock();
-    let noop = || {};
-
-    for line_res in stdin.lock().lines() {
-        let Ok(line) = line_res else {
-            break;
-        };
-        let trimmed = line.trim();
-        if trimmed.is_empty() {
-            continue;
-        }
-        let parsed: Value = match serde_json::from_str(trimmed) {
-            Ok(v) => v,
-            Err(e) => {
-                let err_resp = json!({
-                    "jsonrpc": "2.0",
-                    "id": Value::Null,
-                    "error": { "code": -32700, "message": format!("Parse error: {}", e) }
-                });
-                let _ = writeln!(out, "{}", err_resp);
-                let _ = out.flush();
-                continue;
-            }
-        };
-
-        if let Some(resp) = handle_jsonrpc(&parsed, &noop) {
-            let _ = writeln!(out, "{}", resp);
-            let _ = out.flush();
-        }
-    }
+    // Offline build: MCP stdio server removed.
 }
 
 /// Transport 2: Lightweight loopback-only Streamable HTTP MCP endpoint (`http://127.0.0.1:<port>/mcp`)
@@ -436,23 +405,8 @@ pub fn start_http_mcp_server<F>(port: u16, enabled: Arc<AtomicBool>, on_change: 
 where
     F: Fn() + Send + Sync + 'static,
 {
-    let on_change = Arc::new(on_change);
-    std::thread::spawn(move || {
-        let addr = format!("127.0.0.1:{}", port);
-        let Ok(listener) = TcpListener::bind(&addr) else {
-            return;
-        };
-        for stream_res in listener.incoming() {
-            let Ok(stream) = stream_res else {
-                continue;
-            };
-            let flag = enabled.clone();
-            let notify = on_change.clone();
-            std::thread::spawn(move || {
-                handle_http_conn(stream, &flag, &*notify);
-            });
-        }
-    });
+    // Offline build: MCP HTTP server removed (no TCP port is opened).
+    let _ = (port, enabled, on_change);
 }
 
 fn write_http_response(stream: &mut TcpStream, status: &str, content_type: &str, body: &str) {

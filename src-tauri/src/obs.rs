@@ -122,55 +122,8 @@ fn stop_locked(slot: &mut Option<ObsServerControl>) {
 
 /// Starts, stops, or restarts the local OBS Browser Source server to match `enabled` & `port`.
 pub fn sync_obs_server(app: &AppHandle, enabled: bool, port: u16) {
-    let actual_port = if port == 0 { 27421 } else { port };
-    let mut slot = control_slot().lock().unwrap();
-
-    if !enabled {
-        stop_locked(&mut slot);
-        return;
-    }
-
-    if let Some(existing) = slot.as_ref() {
-        if existing.port == actual_port && existing.running.load(Ordering::Relaxed) {
-            return;
-        }
-    }
-
-    stop_locked(&mut slot);
-
-    let running = Arc::new(AtomicBool::new(true));
-    let running_thread = running.clone();
-    let app_handle = app.clone();
-
-    let Ok(listener) = TcpListener::bind(("127.0.0.1", actual_port)) else {
-        eprintln!("[KuroCat OBS] Failed to bind 127.0.0.1:{}", actual_port);
-        return;
-    };
-
-    *slot = Some(ObsServerControl {
-        port: actual_port,
-        running,
-    });
-    drop(slot);
-
-    std::thread::spawn(move || {
-        for incoming in listener.incoming() {
-            if !running_thread.load(Ordering::SeqCst) {
-                break;
-            }
-            let Ok(stream) = incoming else {
-                continue;
-            };
-            if !running_thread.load(Ordering::SeqCst) {
-                break;
-            }
-            let app_conn = app_handle.clone();
-            let run_conn = running_thread.clone();
-            std::thread::spawn(move || {
-                handle_connection(stream, &app_conn, &run_conn);
-            });
-        }
-    });
+    // Offline build: OBS local HTTP server removed (no TCP port is opened).
+    let _ = (app, enabled, port);
 }
 
 pub fn shutdown_obs_server() {

@@ -979,3 +979,13 @@ html.win7-ulw-mode .floating-side-menu {
 .footer-btn.danger:hover {
   background: rgba(255, 92, 92, 0.18);
 }
+
+/* Offline build: network-related menu items removed */
+[data-action="check-update"],
+[data-action="toggle-obs"],
+[data-action="copy-obs"],
+[data-action="toggle-obs-hide"],
+[data-action="toggle-mcp"],
+[data-action="copy-mcp"],
+#btn-toast-install,
+#btn-toast-open { display: none !important; }

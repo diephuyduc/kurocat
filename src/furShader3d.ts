@@ -346,7 +346,7 @@ export function resolveFurPalette3D(skin: CatSkinConfig, style: RenderStyle3D): 
             : null,
         inner: skin.earInnerColor || '#f0bcc0',
         stripes: pat === 'tabby' ? 1 : 0,
-        muzzle: pat === 'tabby' || pat === 'bicolor' || pat === 'tuxedo' ? 1 : 0,
+        muzzle: pat === 'tabby' || pat === 'bicolor' || pat === 'tuxedo' || !!skin.maskColor ? 1 : 0,
         bib: skin.bellyBibColor || pat === 'bicolor' || pat === 'tuxedo' ? 1 : 0,
         calico: pat === 'calico' ? 1 : 0,
         tuxedo: pat === 'tuxedo' || pat === 'bicolor' ? 1 : 0,
@@ -356,8 +356,13 @@ export function resolveFurPalette3D(skin: CatSkinConfig, style: RenderStyle3D): 
         paw: skin.pawColor || skin.furColor || '#faf8f2',
         pawTuckLine: isDark ? 'rgba(182, 188, 198, 0.34)' : 'rgba(110, 98, 90, 0.28)',
         toe: '#bdb5aa',
-        whisker: isDark ? '#d8dce4' : '#7f7268',
-        whiskerOpacity: 0.6,
+        whisker:
+          skin.whiskerColor && skin.whiskerColor !== 'none'
+            ? skin.whiskerColor
+            : isDark
+              ? '#d8dce4'
+              : '#7f7268',
+        whiskerOpacity: skin.whiskerColor === 'none' ? 0 : 0.6,
         nose: skin.noseColor || '#ee8e9e',
         mouth: skin.mouthColor || '#5e5550',
         eyeTop: skin.eyeColorTop || '#4a88d8',

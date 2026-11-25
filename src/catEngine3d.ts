@@ -2518,10 +2518,25 @@ export class KuroCatEngine3D {
     const tailHoverTarget = this.tailTap.down ? 0 : 0.095;
     this.tailTap.hover += (tailHoverTarget - this.tailTap.hover) * approach(34, dt);
 
-    this.tailLimb.update(
-      (u, out) => this.tailCurve.getPoint(u, out),
-      (u) => mix(0.068, 0.044, u) * (1 - 0.12 * Math.sin(u * Math.PI)),
-    );
+    if (this.currentSkin?.tailFluffy) {
+      // Fluffy curled tail (e.g. Shiba): thicker, rises and curls back over the hip.
+      this.tailLimb.update(
+        (u, out) => {
+          this.tailCurve.getPoint(u, out);
+          const c = u * u;
+          out.y += 0.62 * c;
+          out.x -= 0.38 * c * u;
+          out.z += 0.10 * c;
+          return out;
+        },
+        (u) => mix(0.115, 0.075, u) * (1 + 0.18 * Math.sin(u * Math.PI)),
+      );
+    } else {
+      this.tailLimb.update(
+        (u, out) => this.tailCurve.getPoint(u, out),
+        (u) => mix(0.068, 0.044, u) * (1 - 0.12 * Math.sin(u * Math.PI)),
+      );
+    }
 
     // 9) Sleek Unified KuroCat Arms + Cozy Tucked Idle Belly Paws!
     const updatePaw = (paw: PawTrack3D, isLeft: boolean) => {

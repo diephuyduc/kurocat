@@ -81,7 +81,8 @@ pub fn normalize_fps_cap(raw: u16) -> u16 {
 }
 
 pub fn default_language() -> String {
-    "auto".to_string()
+    // Offline build: English by default (can still be changed in the menu).
+    "en-US".to_string()
 }
 
 pub fn normalize_language(raw: &str) -> String {

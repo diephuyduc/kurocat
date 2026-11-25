@@ -7,13 +7,14 @@ use std::sync::OnceLock;
 pub const DEFAULT_LOCALE: &str = "en-US";
 
 #[allow(dead_code)]
-pub const SHIPPED_LOCALES: [&str; 5] = ["zh-CN", "zh-TW", "en-US", "ja-JP", "ko-KR"];
+pub const SHIPPED_LOCALES: [&str; 6] = ["zh-CN", "zh-TW", "en-US", "ja-JP", "ko-KR", "vi-VN"];
 
 const RAW_ZH_CN: &str = include_str!("../../locales/zh-CN.json");
 const RAW_ZH_TW: &str = include_str!("../../locales/zh-TW.json");
 const RAW_EN_US: &str = include_str!("../../locales/en-US.json");
 const RAW_JA_JP: &str = include_str!("../../locales/ja-JP.json");
 const RAW_KO_KR: &str = include_str!("../../locales/ko-KR.json");
+const RAW_VI_VN: &str = include_str!("../../locales/vi-VN.json");
 
 struct Catalogs {
     maps: BTreeMap<&'static str, BTreeMap<String, String>>,
@@ -57,6 +58,7 @@ fn catalogs() -> &'static Catalogs {
         maps.insert("en-US", parse_catalog(RAW_EN_US));
         maps.insert("ja-JP", parse_catalog(RAW_JA_JP));
         maps.insert("ko-KR", parse_catalog(RAW_KO_KR));
+        maps.insert("vi-VN", parse_catalog(RAW_VI_VN));
         Catalogs { maps }
     })
 }
@@ -93,6 +95,7 @@ pub fn resolve_locale_tag(raw: &str) -> &'static str {
         }
         "ja" => "ja-JP",
         "ko" => "ko-KR",
+        "vi" => "vi-VN",
         "en" => "en-US",
         _ => DEFAULT_LOCALE,
     }
